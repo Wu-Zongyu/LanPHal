@@ -13,7 +13,7 @@ class ImageYORNDataset(ImageBaseDataset):
         'HallusionBench': 'https://opencompass.openxlab.space/utils/VLMEval/HallusionBench.tsv',
         'POPE': 'https://opencompass.openxlab.space/utils/VLMEval/POPE.tsv',
         'AMBER': 'https://huggingface.co/datasets/yifanzhang114/AMBER_base64/resolve/main/AMBER.tsv',
-        'LanPHal':'/home/zzw5373/LMUData/LanPHal.tsv'
+        'LanPHal':'LMUData/LanPHal.tsv'
     }
 
     DATASET_MD5 = {
