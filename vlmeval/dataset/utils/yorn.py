@@ -184,16 +184,6 @@ def POPE_rating(data_file):
 
 
 def LanPHal_rating(data_file):
-    def cal_f1_score(y_true, y_pred):
-        tp = sum((y_true == 1) & (y_pred == 1))
-        fp = sum((y_true == 0) & (y_pred == 1))
-        fn = sum((y_true == 1) & (y_pred == 0))
-
-        precision = tp / (tp + fp) if (tp + fp) != 0 else 0
-        recall = tp / (tp + fn) if (tp + fn) != 0 else 0
-        f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) != 0 else 0
-        return f1_score, precision, recall
-
     data = pd.read_excel(data_file)
     data['pred_first'] = data['prediction'].str.strip().str[0].str.upper()
     data['ans_first'] = data['answer'].str.strip().str[0].str.upper()
@@ -208,17 +198,9 @@ def LanPHal_rating(data_file):
     data['index'] = range(len(data))
     
     res = dict(split=[], acc=[], precision=[], recall=[])
-
-    # Calculate overall metrics
-    y_true = np.array([1 if ans == 'Y' else 0 for ans in data['ans_first']])  
-    y_pred = np.array([1 if pred == 'Y' else 0 for pred in data['pred_first']])  
-    
-    f1_score, precision, recall = cal_f1_score(y_true, y_pred)
     
     res['split'].append('Overall')
     res['acc'].append(np.mean(data['score']) * 100) 
-    res['precision'].append(precision * 100)
-    res['recall'].append(recall * 100)
 
     # Calculate category-wise metrics
     if 'category' in data:
@@ -226,14 +208,8 @@ def LanPHal_rating(data_file):
         cates = [c for c in cates if not pd.isna(c)]
         for c in cates:
             sub = data[data['category'] == c]
-            y_true_sub = np.array([1 if ans == 'Y' else 0 for ans in sub['ans_first']]) 
-            y_pred_sub = np.array([1 if pred == 'Y' else 0 for pred in sub['pred_first']])  
-            f1_sub, precision_sub, recall_sub = cal_f1_score(y_true_sub, y_pred_sub)
-            
             res['split'].append(c)
             res['acc'].append(np.mean(sub['score']) * 100)
-            res['precision'].append(precision_sub * 100)
-            res['recall'].append(recall_sub * 100)
 
     ret = pd.DataFrame(res)
     return ret
